@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fakta Clipper — Potong Video Otomatis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        header {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #facc15, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(250, 204, 21, 0.2);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: #f1f5f9;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #facc15;
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, #facc15, #f59e0b);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1e293b;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250, 204, 21, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status.info {
+            display: block;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            color: #bfdbfe;
+        }
+
+        .status.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #bbf7d0;
+        }
+
+        .status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fecaca;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .feature-item h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #facc15;
+        }
+
+        .feature-item p {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #1e293b;
+            border-top-color: #facc15;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="logo">⚡ Fakta Clipper</h1>
+        <p class="tagline">Potong video jadi klip pendek otomatis — cepat & mudah!</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <label for="video-url">🔗 Tempel Link Video / YouTube</label>
+            <input type="url" id="video-url" placeholder="Contoh: https://youtube.com/watch?v=xxxxxx">
+
+            <label for="clip-length">⏱️ Durasi Klip (detik)</label>
+            <select id="clip-length">
+                <option value="15">15 detik</option>
+                <option value="30" selected>30 detik</option>
+                <option value="45">45 detik</option>
+                <option value="60">60 detik</option>
+            </select>
+
+            <label for="style">🎨 Gaya Klip</label>
+            <select id="style">
+                <option value="viral">Paling Viral — bagian menarik saja</option>
+                <option value="intro">Ringkas — poin penting</option>
+                <option value="complete">Lengkap — urut dari awal</option>
+            </select>
+
+            <button id="process-btn" onclick="processClip()">🚀 Mulai Proses</button>
+
+            <div id="status-box" class="status"></div>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">
+                <h3>⚡ Cepat</h3>
+                <p>Hanya hitungan detik</p>
+            </div>
+            <div class="feature-item">
+                <h3>🤖 Otomatis</h3>
+                <p>AI yang pilih momen terbaik</p>
+            </div>
+            <div class="feature-item">
+                <h3>📱 Siap Upload</h3>
+                <p>Format vertikal untuk TikTok/Reels</p>
+            </div>
+            <div class="feature-item">
+                <h3>💯 Gratis</h3>
+                <p>Tanpa langganan apapun</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem; background: rgba(250,204,21,0.05); padding: 1.5rem; border-radius: 10px; border: 1px dashed #facc15;">
+            <h3 style="color:#facc15; margin-bottom: 0.5rem;">📌 Catatan Penting</h3>
+            <p style="color:#cbd5e1; font-size:0.9rem;">
+                Versi ini adalah antarmuka tampilan saja. Fitur pemrosesan video membutuhkan koneksi ke layanan AI pihak ketiga.
+                Untuk versi yang berfungsi penuh, gunakan layanan siap pakai seperti <strong>CapCut Web</strong> atau <strong>KlipAja.id</strong>
+                sambil aku pelajari cara menghubungkan sistemnya sepenuhnya ya! 😊
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        Fakta Clipper © 2026 — Dibuat dengan ❤️ untuk kreator Indonesia<br>
+        <small>Bagian dari Fakta 360</small>
+    </footer>
+
+    <script>
+        function showStatus(type, message) {
+            const box = document.getElementById('status-box');
+            box.className = 'status ' + type;
+            box.innerHTML = message;
+        }
+
+        function processClip() {
+            const url = document.getElementById('video-url').value.trim();
+            const btn = document.getElementById('process-btn');
+
+            if (!url) {
+                showStatus('error', '⚠️ Silakan masukkan link video terlebih dahulu!');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span>⏳ Sedang memproses...';
+            showStatus('info', '🔍 Sedang menganalisis video...<br>🤖 AI sedang memilih momen terbaik...<br>✂️ Memotong klip...');
+
+            // Simulasi proses
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 Mulai Proses';
+                showStatus('success', 
+                    '✅ <strong>Simulasi Selesai!</strong><br><br>' +
+                    '🎯 Klip siap (versi demo)<br>' +
+                    '📝 Untuk versi yang benar-benar berfungsi, silakan buka:<br>' +
+                    '👉 <a href="https://klipaja.id" target="_blank" style="color:#facc15">klipaja.id</a> atau <a href="https://capcut.com" target="_blank" style="color:#facc15">CapCut Web</a><br><br>' +
+                    'Terima kasih sudah mencoba prototipe ini! 😊'
+                );
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
